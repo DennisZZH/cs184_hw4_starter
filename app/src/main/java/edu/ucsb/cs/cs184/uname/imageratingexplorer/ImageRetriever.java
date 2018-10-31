@@ -69,7 +69,7 @@ public class ImageRetriever {
 
         @Override
         protected void onPostExecute(ArrayList<String> picNames) {
-            if (listener != null) {
+            if (listener != null && picNames != null) {
                 listener.onImageList(picNames);
             }
         }

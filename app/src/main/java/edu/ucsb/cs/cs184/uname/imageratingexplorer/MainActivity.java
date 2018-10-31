@@ -22,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
         ImageRatingDatabaseHelper.Initialize(this);
 
-        final TextView textView = (TextView)findViewById(R.id.textView);
-        final ImageView imageView = (ImageView)findViewById(R.id.imageView);
+        final TextView textView = (TextView) findViewById(R.id.textView);
+        final ImageView imageView = (ImageView) findViewById(R.id.imageView);
 
         ImageRetriever.getImageList(new ImageRetriever.ImageListResultListener() {
             @Override
@@ -32,12 +32,12 @@ public class MainActivity extends AppCompatActivity {
                 ImageRetriever.getImageByIndex(0, new ImageRetriever.ImageResultListener() {
                     @Override
                     public void onImage(Bitmap image) {
-                        try (FileOutputStream stream = openFileOutput("Test.jpg", Context.MODE_PRIVATE)){
+                        try (FileOutputStream stream = openFileOutput("Test.jpg", Context.MODE_PRIVATE)) {
                             image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                             image.recycle();
                         } catch (IOException e) {
                         }
-                        Picasso.with(MainActivity.this).load(getFileStreamPath("Test.jpg")).resize(500,500).centerCrop().into(imageView);
+                        Picasso.with(MainActivity.this).load(getFileStreamPath("Test.jpg")).resize(500, 500).centerCrop().into(imageView);
                     }
                 });
             }
