@@ -40,18 +40,22 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Init", "initializing retriever");
         mImageRetriever = ImageRetriever.getInstance(this);
 
-        mImageRetriever.listImagesRequest(new Response.Listener<JSONObject>() {
+        mImageRetriever.listImagesRequest(new Response.Listener<JSONArray>() {
+
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 try {
-                    Log.d("List of iamges:", response.toString(2));
+                    Log.d("Number of values",
+                            Integer.toString(response.length()));
+                    Log.d("Sample Metadata",
+                            ((JSONObject)response.get(100)).toString(2));
                 } catch (Exception e) {
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // TODO: Handle errors
+                Log.d("error", error.toString());
             }
         });
 

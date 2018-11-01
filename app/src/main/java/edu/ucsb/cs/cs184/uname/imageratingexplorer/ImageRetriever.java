@@ -9,15 +9,18 @@ package edu.ucsb.cs.cs184.uname.imageratingexplorer;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ImageRetriever {
@@ -78,17 +81,17 @@ public class ImageRetriever {
      * This function will list all available images from Lorem Picsum and calls
      * successListener with the json object if successful
      */
-    public void listImagesRequest(Response.Listener<JSONObject> successListener,
+    public void listImagesRequest(Response.Listener<JSONArray> successListener,
                                    Response.ErrorListener errorListener) {
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
                 REQ_LIST_IMG_METADATA,
                 null,
                 successListener,
                 errorListener);
 
-        mInstance.addToRequestQueue(jsonObjectRequest);
+        mInstance.addToRequestQueue(jsonArrayRequest);
     }
 
 
