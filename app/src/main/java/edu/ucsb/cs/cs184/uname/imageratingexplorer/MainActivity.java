@@ -1,53 +1,66 @@
 package edu.ucsb.cs.cs184.uname.imageratingexplorer;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.squareup.picasso.Picasso;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.json.*;
+
 
 public class MainActivity extends AppCompatActivity {
+    ImageRetriever mImageRetriever;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageRatingDatabaseHelper.Initialize(this);
-
         final TextView textView = (TextView) findViewById(R.id.textView);
         final ImageView imageView = (ImageView) findViewById(R.id.imageView);
 
-        ImageRetriever.getImageList(new ImageRetriever.ImageListResultListener() {
+        Log.d("Init", "initializing retriever");
+        mImageRetriever = ImageRetriever.getInstance(this);
+
+        mImageRetriever.listImagesRequest(new Response.Listener<JSONObject>() {
             @Override
-            public void onImageList(ArrayList<String> list) {
-                textView.setText(String.format("Total number: %d", list.size()));
-                ImageRetriever.getImageByIndex(0, new ImageRetriever.ImageResultListener() {
-                    @Override
-                    public void onImage(Bitmap image) {
-                        try (FileOutputStream stream = openFileOutput("Test.jpg", Context.MODE_PRIVATE)) {
-                            image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                            image.recycle();
-                        } catch (IOException e) {
-                        }
-                        Picasso.with(MainActivity.this).load(getFileStreamPath("Test.jpg")).resize(500, 500).centerCrop().into(imageView);
-                    }
-                });
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.d("List of iamges:", response.toString(2));
+                } catch (Exception e) {
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // TODO: Handle errors
             }
         });
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ImageRatingDatabaseHelper.GetInstance().close();
+        ImageRatingDbHelper.getInstance().close();
     }
 
     @Override
